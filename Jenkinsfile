@@ -9,13 +9,13 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                bat 'mvn clean package -DskipTests'
+                bat 'mvnw.cmd clean package -DskipTests'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing...'
-                bat 'mvn test'
+                bat 'mvnw.cmd test'
             }
         }
         stage('Deploy') {
