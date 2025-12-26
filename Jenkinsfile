@@ -9,19 +9,19 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package -DskipTests'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing...'
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                sh 'echo "Deploying application..."'
+                bat 'echo "Deploying application..."'
             }
         }
     }
