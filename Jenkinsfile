@@ -2,32 +2,55 @@ pipeline {
     agent any
 
     environment {
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-24' // Adjust this path if your JDK is elsewhere
-    }
-
-    triggers {
-        pollSCM('* * * * *')
+        SONAR_PROJECT_KEY = "tp4-java-project"
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bilalelou/tp3.git'
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Building...'
-                bat 'mkdir out'
-                bat 'javac -d out src/main/java/com/example/*.java'
+                bat 'mvn -B clean package -DskipTests'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
-                bat 'java -cp out com.example.Main'
+                bat 'mvn -B test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
             }
         }
-        stage('Deploy') {
+        stage('SonarQube Analysis') {
             steps {
-                echo 'Deploying...'
-                bat 'echo "Deploying application..."'
+                withSonarQubeEnv('SonarQube') {
+                    bat """
+                        mvn -B sonar:sonar ^
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+                    """
+                }
             }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ TP4 réussi : Qualité OK, pipeline validé"
+        }
+        failure {
+            echo "❌ Pipeline bloqué : tests ou Quality Gate en échec"
         }
     }
 }
