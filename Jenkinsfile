@@ -16,6 +16,7 @@ pipeline {
                 bat 'mvn -B clean package -DskipTests'
             }
         }
+
         stage('Test') {
             steps {
                 bat 'mvn -B test'
@@ -36,6 +37,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
