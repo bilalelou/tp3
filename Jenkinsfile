@@ -45,6 +45,7 @@ pipeline {
         //         -Dsonar.login=sqp_031459f9f293025f7c1c09b21905a2ce7c9d04a9
         //     """
         // }
+        
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
