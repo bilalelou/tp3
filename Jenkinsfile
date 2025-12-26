@@ -13,13 +13,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                bat 'mvnw.cmd clean package -DskipTests'
+                bat 'mkdir out'
+                bat 'javac -d out src/main/java/com/example/*.java'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing...'
-                bat 'mvnw.cmd test'
+                bat 'java -cp out com.example.Main'
             }
         }
         stage('Deploy') {
