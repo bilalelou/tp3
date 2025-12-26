@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-24' // Adjust this path if your JDK is elsewhere
+    }
+
     triggers {
         pollSCM('* * * * *')
     }
