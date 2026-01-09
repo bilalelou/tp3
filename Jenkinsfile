@@ -23,13 +23,13 @@ pipeline {
         
         stage('Build') {
             steps {
-                bat 'call mvnw.cmd -B clean package -DskipTests'
+                bat 'mvn -B clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'call mvnw.cmd -B test'
+                bat 'mvn -B test'
             }
             post {
                 always {
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     bat """
-                        call mvnw.cmd -B sonar:sonar ^
+                        mvn -B sonar:sonar ^
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY}
                     """
                 }
