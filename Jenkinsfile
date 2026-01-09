@@ -9,17 +9,21 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/bilalelou/tp3.git'
+                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                     echo "Token is ready for use in this block"
+                }
             }
         }
+
         stage('Build') {
             steps {
-                bat 'mvn -B clean package -DskipTests'
+                bat 'call mvnw.cmd -B clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn -B test'
+                bat 'call mvnw.cmd -B test'
             }
             post {
                 always {
@@ -31,7 +35,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     bat """
-                        mvn -B sonar:sonar ^
+                        call mvnw.cmd -B sonar:sonar ^
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY}
                     """
                 }
