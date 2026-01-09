@@ -8,9 +8,8 @@ pipeline {
     stages {
         stage('Setup Environment') {
             steps {
-                // This retrieves your secret and maps it to the GITHUB_TOKEN variable
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                    bat 'echo Token retrieved successfully but masked in logs'
+                    bat 'echo Token retrieved successfully'
                 }
             }
         }
@@ -23,13 +22,14 @@ pipeline {
         
         stage('Build') {
             steps {
-                bat 'mvn -B clean package -DskipTests'
+                // Use mvnw.cmd instead of mvn
+                bat 'call mvnw.cmd -B clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn -B test'
+                bat 'call mvnw.cmd -B test'
             }
             post {
                 always {
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     bat """
-                        mvn -B sonar:sonar ^
+                        call mvnw.cmd -B sonar:sonar ^
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY}
                     """
                 }
