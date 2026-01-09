@@ -6,15 +6,21 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Setup Environment') {
             steps {
-                git branch: 'main', url: 'https://github.com/bilalelou/tp3.git'
+                // This retrieves your secret and maps it to the GITHUB_TOKEN variable
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                     echo "Token is ready for use in this block"
+                    bat 'echo Token retrieved successfully but masked in logs'
                 }
             }
         }
 
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bilalelou/tp3.git'
+            }
+        }
+        
         stage('Build') {
             steps {
                 bat 'call mvnw.cmd -B clean package -DskipTests'
@@ -31,6 +37,7 @@ pipeline {
                 }
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -41,14 +48,7 @@ pipeline {
                 }
             }
         }
-        // stage('SonarQube Quality Gate') {
-        //     bat """
-        //         mvn clean verify sonar:sonar \
-        //         -Dsonar.projectKey=tp3 \
-        //         -Dsonar.host.url=http://localhost:9000 \
-        //         -Dsonar.login=sqp_031459f9f293025f7c1c09b21905a2ce7c9d04a9
-        //     """
-        // }
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
