@@ -3,8 +3,8 @@ pipeline {
 
     tools {
         // These names must match what you configured in "Manage Jenkins" -> "Tools"
-        jdk 'Java 24' 
-        maven 'Maven 3'
+        jdk 'java 24' 
+        maven 'maven 3'
     }
 
     environment {
