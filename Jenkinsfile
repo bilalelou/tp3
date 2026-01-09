@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-            jdk 'Java24' // This must match the Name you gave in Jenkins Tools
+            jdk 'java 24' // This must match the Name you gave in Jenkins Tools
         }
 
     environment {
