@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+            jdk 'Java17' // This must match the Name you gave in Jenkins Tools
+        }
+        
     environment {
         SONAR_PROJECT_KEY = "tp4-java-project"
     }
