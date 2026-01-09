@@ -48,7 +48,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     bat """
-                        mvn -B sonar:sonar ^
+                        mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar ^
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY}
                     """
                 }
