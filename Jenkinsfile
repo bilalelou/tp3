@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     tools {
-            jdk 'java 24' // This must match the Name you gave in Jenkins Tools
-        }
+        // These names must match what you configured in "Manage Jenkins" -> "Tools"
+        jdk 'Java 24' 
+        maven 'Maven 3'
+    }
 
     environment {
         SONAR_PROJECT_KEY = "tp4-java-project"
@@ -13,7 +15,7 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                    bat 'echo Token retrieved successfully'
+                    bat 'echo Credentials verified'
                 }
             }
         }
@@ -26,14 +28,14 @@ pipeline {
         
         stage('Build') {
             steps {
-                // Use mvnw.cmd instead of mvn
-                bat 'call mvnw.cmd -B clean package -DskipTests'
+                // Using 'mvn' instead of 'mvnw.cmd' avoids the directory property error
+                bat 'mvn -B clean package -DskipTests'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'call mvnw.cmd -B test'
+                bat 'mvn -B test'
             }
             post {
                 always {
@@ -46,7 +48,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     bat """
-                        call mvnw.cmd -B sonar:sonar ^
+                        mvn -B sonar:sonar ^
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY}
                     """
                 }
@@ -67,7 +69,7 @@ pipeline {
             echo "✅ TP4 réussi : Qualité OK, pipeline validé"
         }
         failure {
-            echo "❌ Pipeline bloqué : tests ou Quality Gate en échec"
+            echo "❌ Pipeline échoué"
         }
     }
 }
